@@ -1,5 +1,5 @@
 # Let's try it quick!
-With the goal of keeping things as simple as possible to start, this tutorial uses `PlantUML` as the diagram tool, but StateSmith also supports `draw.io` (covered in other tutorials). PlantUML is a great place to start.
+This tutorial is specific to draw.io. [Tutorial 3 covers PlantUML](https://github.com/StateSmith/tutorial-3).
 
 The first design we will look at is a small Hierarchical State Machine (HSM) that represents the state of Mario in a game.
 
@@ -32,7 +32,7 @@ If you already have a dotnet SDK (6,7,8) installed, you can quickly install the 
 ```sh
 dotnet tool install --global StateSmith.Cli
 ```
-Make sure that the StateSmith.Cli version is at least `0.12.2`. You can check the version by running:
+Make sure that the StateSmith.Cli version is at least `0.11.0`. I generally recommend using the latest release available. You can check the version by running:
 
 ```sh
 ss.cli --version
@@ -107,10 +107,10 @@ You should see output similar to the following:
 
 ```
 Using settings directory: /home/afk/.config/StateSmith.Cli
-StateSmith.Cli 0.10.0+4a4e30018e9a371124530fa96cf2ba3322b80459
+StateSmith.Cli 0.12.2+4a4e30018e9a371124530fa96cf2ba3322b80459
 ```
 
-Make sure the version is at least `0.10.0`.
+Make sure the version is at least `0.11.0`.
 
 <br>
 
