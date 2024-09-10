@@ -24,18 +24,12 @@ In this directory (`lesson-1`) run the following command to run StateSmith <u>h<
 ss.cli run -h
 ```
 
-If you don't have the `ss.cli` binary in your PATH, you will need to run the following command instead to access the ss.cli binary in the tutorial root directory:
-
-```sh
-../ss.cli run -h
-```
-
 You should see output similar to the following:
 
 ```
 <snip>
 
-StateSmith Runner - Compiling file: `MarioSm.plantuml` (no state machine name specified).
+StateSmith Runner - Compiling file: `MarioSm.drawio` (no state machine name specified).
 StateSmith Runner - State machine `MarioSm` selected.
 StateSmith Runner - Writing to file `MarioSm.js`
 StateSmith Runner - Writing to file `MarioSm.sim.html`
@@ -59,7 +53,9 @@ Open `index.html` in your web browser and press buttons to send events to the st
 # StateSmith Runs Your Exact Code
 By default, StateSmith outputs the **exact same action code** you put in your diagram. In this case, it is calling global functions (written by the user), but we'll also cover other ways for your state machine to interact with the outside world.
 
+
 ![](docs/fire-global-function.png)
+
 
 ```javascript
 // global user written function called by the state machine
@@ -71,75 +67,39 @@ function fireMario() {
 <br>
 
 
-# PlantUML Diagram
-You can learn more about PlantUML state machines at [https://plantuml.com/state-diagram](https://plantuml.com/state-diagram), but we will cover the basics here. It is very simple.
+# Open the Diagram
+Open `MarioSm.drawio` in draw.io to see the state machine diagram.
 
-Check out the file [MarioSm.plantuml](./MarioSm.plantuml) to see the diagram that defines the state machine. It is well commented and easy to understand.
+At the bottom of the diagram, you will see multiple pages.
 
-You can define a diagram a number of ways using PlantUML. Here's one simple example. First layout your states:
+When ss.cli generates you a new draw.io file, it creates 3 pages for you:
 
-```plantuml
-' The DEFEAT state has an optional <<dark>> style.
-state DEFEAT <<dark>>
+1. `design` - the state machine diagram
+1. `config` - where you can specify StateSmith settings
+1. `$notes shapes & tips` - a page with template shapes and helpful tips
 
-' Define a super state (AKA composite state) with substates
-state ALIVE {
-    ' Define the initial transition of this super state.
-    [*] -> SMALL
-    state SMALL
-    state SUPER <<blue>>
-    state FIRE  <<red>>
-}
-```
 
-Then add your state behaviors (transitions/code):
 
-```plantuml
-' Define the initial transition of state machine.
-[*] -> ALIVE
+## Config Page
+The config page in the `MarioSm.drawio` file contains a special [TOML](https://toml.io/en/) block that can be used to configure StateSmith settings. This is where you can specify the transpiler to use, and other settings.
 
-' Transition to the DEFEAT state if crushed.
-ALIVE --> DEFEAT: CRUSH
-
-SMALL: enter / smallMario();
-SMALL --> SUPER: MUSHROOM
-SMALL --> FIRE: FIRE_FLOWER
-SMALL --> DEFEAT: HIT
-```
-
-## Pro PlantUML Tip
-If you are new to PlantUML, you can use the [PlantUML online editor](https://www.plantuml.com/plantuml/uml/SoWkIImgAStDuOhMYbNGjLC8zdNqyU42amgwGBwFOv2xAvT3QbuAK140). It is a great way to learn PlantUML and see your diagrams in real time.
-
-I would also highly recommend the [PlantUML extension for vscode](https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml). It is a great way to see your diagrams in vscode and get syntax highlighting. You can see a graphical representation of the diagram by opening the plantuml file in vscode and pressing `Alt + D` or clicking the `Preview` button in the top right corner of the editor.
-
-![](docs/preview-button.png)
-
-This is really handy because you can see the graphical diagram update live as you edit the file. It also checks for syntax errors and will show you where they are.
-
-![](docs/plantuml-preview.png)
+![](docs/config-page.png)
 
 <br>
-
-
-
-# What About StateSmith Commands In PlantUML File?
-The bottom of the `.plantuml` file contains a special comment block that can be used to configure StateSmith settings. This is where you can specify the transpiler to use, and other settings.
 
 The format uses [TOML](https://toml.io/en/) syntax.
 
-```plantuml
-/'! $CONFIG : toml
+```TOML
 [SmRunnerSettings]
 transpilerId = "JavaScript"
-'/
 ```
 
-More settings are available here: https://github.com/StateSmith/StateSmith/issues/335
+Settings are documented here: https://github.com/StateSmith/StateSmith/blob/main/docs/settings.md
 
 <br>
 
-# Edit The Diagram
-Try modifying the diagram in the `.plantuml` file by changing some of the transitions.
+## Edit The Diagram
+Try modifying the diagram by changing some of the transitions.
 
 For example, make Mario start as Super Mario (instead of small) when he is revived with a mushroom.
 
@@ -163,14 +123,6 @@ The simulator is a brand new (and improving) tool that allows you to interact wi
 
 
 <br>
-
-
-
-
-
-
-
-
 
 
 
