@@ -9,78 +9,95 @@ You can see it in action by opening `index.html` in a web browser.
 Our goal is to create a new state machine from scratch so go ahead and delete the existing `LightSm.*` files in this directory.
 
 
-## Create A New PlantUML File
+## Create A New `.drawio` File
 We can do this manually, or `ss.cli` can help us by generating a new diagram from template for us.
 
 Let's use `ss.cli`. Run the following command in the terminal:
 
 ```bash
-ss.cli
+ss.cli create
 ```
 
-Use the arrow keys to select `Create` and hit enter.<br>
-![](./docs/main-menu.png)
 
 Select `User Friendly` and hit enter.<br>
-![](./docs/select-user-friendly.png)
+![](docs/select-user-friendly.png)
 
 Type in the name of the state machine `LightSm` and hit enter.<br>
 📢 NOTE! It must be exactly `LightSm` for the rest of this lesson to work.<br>
-![](./docs/type-light-sm.png)
+![](docs/type-light-sm.png)
 
 Select `JavaScript` and hit enter.<br>
-![](./docs/select-js.png)
+![](docs/select-js.png)
 
-Select `PlantUML` and hit enter.<br>
-![](./docs/select-plantuml.png)
+Select `.drawio` and hit enter.<br>
+![](docs/select-drawio.png)
 
 Take the default suggestion for diagram name/path by hitting enter.<br>
-![](./docs/take-diagram-path-suggestion.png)
+![](docs/take-diagram-path-suggestion.png)
 
-Select the minimal (or any) template and hit enter.<br>
-![](./docs/select-plantuml-minimal-template.png)
+Select the `Multiple pages` template and hit enter.<br>
+![](docs/select-template.png)
 
 Select `yes` to confirm and hit enter.<br>
-![](./docs/confirm-minimal.png)
+![](docs/confirm.png)
 
-You should now see a `LightSm.plantuml` file in this directory.
+You should now see a `LightSm.drawio` file in this directory.
 
-## Open The PlantUML File
-Open the `LightSm.plantuml` file in your editor of choice and you'll see a sample state machine template.
 
-Replace the contents of the file with the following:
+<br>
 
-```plantuml
-@startuml LightSm
 
-' STATES
-state OFF
-state ON1
 
-' STATE HANDLERS
-[*] -> OFF
 
-OFF: enter / off();
-OFF --> ON1: INC
+## Review draw.io Usage Tips 📝
+Review the [animated gif instructions here](https://github.com/StateSmith/StateSmith/wiki/draw.io:-tips) for the basics of using draw.io.
 
-ON1: enter / blueLaser();
-ON1 --> OFF: DIM
+Stuff like how to:
+- add states
+- add transitions
+- modify labels
+- ...
 
-/'! $CONFIG : toml
-SmRunnerSettings.transpilerId = "JavaScript"
-'/
-@enduml
-```
+![](docs/usage-tips.png)
+
+### 📢 Important!
+The [tips link](https://github.com/StateSmith/StateSmith/wiki/draw.io:-tips) above has an important tip about avoiding a common mistake when using draw.io.
+
+Make sure to read it.
+
+
+<br>
+
+
+## Edit the Diagram File
+
+Modify the design page to look like this:
+
+![](docs/1.png)
 
 We now have a state machine with two states `OFF` and `ON1`. The `OFF` state is the initial state and the `ON1` state is the state when the laser flashlight is on.
 
-![](./docs/two-states.png)
+Replace the config page TOML settings with this:
+    
+```toml
+SmRunnerSettings.transpilerId = "JavaScript"
+```
+
+![](docs/1-config.png)
+
+
+<br>
+
 
 # Generate The State Machine Code
 Run the below command in this directory to generate code from your diagram file.
 ```
 ss.cli run --here
 ```
+
+
+<br>
+
 
 ## Interact With The State Machine 🌍
 Now that we've generated the state machine JavaScript code, let's interact with it.
@@ -94,13 +111,15 @@ You should now be able to use the `INC` and `DIM` buttons to control the laser f
 
 
 # Add Another State `ON2`
-Add another state `ON2` to the PlantUML file with the following behavior:
+Add another state `ON2` to the design with the following behavior:
 * upon entering the state, it should call the function `yellowLaser()`
 * it should transition to `ON1` when the `DIM` event is received
 
 Additionally, add a transition from `ON1` to `ON2` when the `INC` event is received.
 
-We need to add four additional lines to the PlantUML file. See if you can do it yourself. If you get stuck, you can find the solution below.
+See if you can do it yourself. If you get stuck, you can find the solution below.
+
+Remember the [usage tips link](https://github.com/StateSmith/StateSmith/wiki/draw.io:-tips).
 
  *scroll down* ▼ <br>
  <br>
@@ -123,38 +142,9 @@ We need to add four additional lines to the PlantUML file. See if you can do it 
  <br>
  <br>
  
-When you are finished, your PlantUML graphical diagram should look like this:
+![](docs/2.png)
 
-![](./docs/add-on2.png)
 
-and your PlantUML text file should now look something like this:
-
-```plantuml
-@startuml LightSm
-
-' STATES
-state OFF
-state ON1
-state ON2
-
-' STATE HANDLERS
-[*] -> OFF
-
-OFF: enter / off();
-OFF --> ON1: INC
-
-ON1: enter / blueLaser();
-ON1 --> ON2: INC
-ON1 --> OFF: DIM
-
-ON2: enter / yellowLaser();
-ON2 --> ON1: DIM
-
-/'! $CONFIG : toml
-SmRunnerSettings.transpilerId = "JavaScript"
-'/
-@enduml
-```
 
 Generate your state machine code using `ss.cli` and open `index.html` in a web browser to interact with the state machine. You may need to refresh the page in your browser to see the changes.
 
@@ -171,6 +161,10 @@ To get to the red laser `ON3` state, we want the user to have to press the `INC`
 There's a number of ways to implement this. We could use a global count variable, but we will use a variable that belongs to the state machine instance instead.
 
 ### Add The `ON3` State
+
+
+/////////////////////////////////////////////// CONTINUE WORK HERE /////////////////////////////////////////////////
+
 Add the `ON3` state to the PlantUML file.
 
 ```diff
