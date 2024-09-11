@@ -6,8 +6,9 @@ You can see it in action by opening `index.html` in a web browser.
 ![](./docs/intro.png)
 
 ## Delete Existing `LightSm.*` Files
-Our goal is to create a new state machine from scratch so go ahead and delete the existing `LightSm.*` files in this directory.
+Our goal is to create a new state machine from scratch so go ahead and delete the existing `LightSm.*` files in this directory. Don't worry, there is a backup copy: [./docs/copy.drawio](./docs/copy.drawio) if you need it.
 
+<br>
 
 ## Create a New `.drawio` File
 We can do this manually, or `ss.cli` can help us by generating a new diagram from template for us.
@@ -22,21 +23,33 @@ ss.cli create
 Select `User Friendly` and hit enter.<br>
 ![](docs/select-user-friendly.png)
 
+<br>
+
 Type in the name of the state machine `LightSm` and hit enter.<br>
 📢 NOTE! It must be exactly `LightSm` for the rest of this lesson to work.<br>
 ![](docs/type-light-sm.png)
 
+<br>
+
 Select `JavaScript` and hit enter.<br>
 ![](docs/select-js.png)
+
+<br>
 
 Select `.drawio` and hit enter.<br>
 ![](docs/select-drawio.png)
 
+<br>
+
 Take the default suggestion for diagram name/path by hitting enter.<br>
 ![](docs/take-diagram-path-suggestion.png)
 
+<br>
+
 Select the `Multiple pages` template and hit enter.<br>
 ![](docs/select-template.png)
+
+<br>
 
 Select `yes` to confirm and hit enter.<br>
 ![](docs/confirm.png)
@@ -63,7 +76,7 @@ Stuff like how to:
 ### 📢 Important! Avoid Common Mistake
 The tips link above has an important note about [avoiding the common "Non-related nodes overlap" mistake](https://github.com/StateSmith/StateSmith/wiki/Troubleshooting#non-related-nodes-overlap) when using draw.io.
 
-This is probably the most common issue new users bump into when using draw.io to create state machines. Easy to avoid once you know about it.
+This is probably the most common issue new users bump into when using draw.io with StateSmith. Easy to avoid once you know about it.
 
 
 <br>
