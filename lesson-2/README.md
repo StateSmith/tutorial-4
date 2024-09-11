@@ -9,7 +9,7 @@ You can see it in action by opening `index.html` in a web browser.
 Our goal is to create a new state machine from scratch so go ahead and delete the existing `LightSm.*` files in this directory.
 
 
-## Create A New `.drawio` File
+## Create a New `.drawio` File
 We can do this manually, or `ss.cli` can help us by generating a new diagram from template for us.
 
 Let's use `ss.cli`. Run the following command in the terminal:
@@ -60,10 +60,10 @@ Stuff like how to:
 
 ![](docs/usage-tips.png)
 
-### 📢 Important!
-The [tips link](https://github.com/StateSmith/StateSmith/wiki/draw.io:-tips) above has an important tip about avoiding a common mistake when using draw.io.
+### 📢 Important! Avoid Common Mistake
+The tips link above has an important note about [avoiding the common "Non-related nodes overlap" mistake](https://github.com/StateSmith/StateSmith/wiki/Troubleshooting#non-related-nodes-overlap) when using draw.io.
 
-Make sure to read it.
+This is probably the most common issue new users bump into when using draw.io to create state machines. Easy to avoid once you know about it.
 
 
 <br>
@@ -161,22 +161,13 @@ To get to the red laser `ON3` state, we want the user to have to press the `INC`
 There's a number of ways to implement this. We could use a global count variable, but we will use a variable that belongs to the state machine instance instead.
 
 ### Add The `ON3` State
+Add the `ON3` state to the design like all the others. We will modify it later to use the `count` variable.
 
-
-/////////////////////////////////////////////// CONTINUE WORK HERE /////////////////////////////////////////////////
-
-Add the `ON3` state to the PlantUML file.
-
-```diff
- state OFF
- state ON1
- state ON2
-+state ON3
-```
+![](docs/3.png)
 
 
 ### Add A `count` Variable
-Add this bit of TOML to your `$CONFIG : toml` section in the PlantUML file:
+Add this bit of TOML to your `$CONFIG : toml` section in the `config` page:
 
 ```toml
 RenderConfig.AutoExpandedVars = """
@@ -184,107 +175,69 @@ RenderConfig.AutoExpandedVars = """
     """
 ```
 
+![](docs/declare-count-var.png)
+
 Note the following about the `AutoExpandedVars` section:
 * We are using a TOML multi-line string here so that it is easy to add more than one variable.
-* The variable is in the `AutoExpandedVars` section so we can reference it in the PlantUML file naturally instead of writing `this.vars.count` or something similar.
-* **<u>This</u> declaration syntax is programming language specific**. If we were generating C/C++/C# (instead of JS), we would use different syntax to initialize the variable. 
+* The variable is in the `AutoExpandedVars` section so we can reference it in the diagram naturally instead of writing `this.vars.count` or something similar.
+* 📢 **<u>This</u> declaration syntax is programming language specific**. If we were generating C/C++/C#/Java/Python... (instead of JS), we would use different syntax to initialize the variable. Use the syntax appropriate to your target programming language.
 More info [here](https://github.com/StateSmith/StateSmith/blob/main/docs/settings.md#renderconfigautoexpandedvars).
 
 
 ### Reset The `count` Variable Upon Entering `ON2`
-Add the following line to the `ON2` state handler:
+Add the following behavior to the `ON2` state:
 
-```plantuml
-ON2: enter / count = 0;
+```
+enter / count = 0;
 ```
 
 This will reset the `count` variable to `0` every time we enter the `ON2` state.
 
-### Increment The `count` Variable
-Add the following line to the `ON2` state handler:
+![](docs/zero-count.png)
 
-```plantuml
-ON2: INC / count++;
+### Increment The `count` Variable
+Add the following behavior to the `ON2` state handler:
+
+```
+INC / count++;
 ```
 
 This will increment the `count` variable every time the `INC` event is received while in the `ON2` state.
 
-### Transition To `ON3` When `count` Is `3`
-Add the following line to the `ON2` state handler:
+![](docs/inc-count.png)
 
-```plantuml
-ON2 --> ON3: INC [count >= 3]
-```
+### Transition To `ON3` When `count` Is `3`
+Modify the transition from `ON2` to `ON3` to include a guard condition `[count >= 3]`.
+
+![](docs/add-guard.png)
+
 
 ### Ensure Event Handling Order
 We now have multiple `ON2` behaviors that are triggered by the `INC` event. Sometimes we don't care about their execution order, but in this specific case, we need to ensure that the `count++` behavior is executed before the transition behavior guard `[count >= 3]` is evaluated. Otherwise, it may take four `INC` events to transition to `ON3`.
 
 We can do this with a small StateSmith ordering extension to UML syntax. Simply add a `1.` before the `INC` event:
 
-```plantuml
-ON2: 1. INC / count++;
+```
+1. INC / count++;
 ```
 
 We don't need to order the other transition behavior because unordered behaviors are executed after ordered behaviors.
 
-Your ON2 state should now look like this:
-
-![](./docs/on2-closeup.png)
+![](docs/add-order.png)
 
 If you accidentally put the `1.` in the wrong place, you will either get a StateSmith error message, or your generated code will have a syntax error:
 
 ![](./docs/order-error-ex.png)
 
-If you are ever unsure about the syntax, you can always refer to the StateSmith behavior documentation [here](https://github.com/StateSmith/StateSmith/wiki/Behaviors).
+If you are ever unsure about the syntax, you can always refer to the StateSmith [behavior documentation](https://github.com/StateSmith/StateSmith/wiki/Behaviors).
 
-### Finish The `ON3` State
-Add the following lines to the PlantUML file:
+### Check Your Work
+You design should now look like this:
 
-```plantuml
-ON3: enter / redLaser();
-ON3 --> ON2: DIM
-```
+![](docs/check-after-3.png)
 
-Your PlantUML file should now look like this:
 
-![](./docs/finish-on3.png)
 
-```plantuml
-@startuml LightSm
-
-' STATES
-state OFF
-state ON1
-state ON2
-state ON3
-
-' STATE HANDLERS
-[*] -> OFF
-
-OFF: enter / off();
-OFF --> ON1: INC
-
-ON1: enter / blueLaser();
-ON1 --> ON2: INC
-ON1 --> OFF: DIM
-
-ON2: enter / yellowLaser();
-ON2: enter / count = 0;
-ON2: 1. INC / count++;
-ON2 --> ON3: INC [count >= 3]
-ON2 --> ON1: DIM
-
-ON3: enter / redLaser();
-ON3 --> ON2: DIM
-
-/'! $CONFIG : toml
-RenderConfig.AutoExpandedVars = """
-    count: 0,
-    """
-SmRunnerSettings.transpilerId = "JavaScript"
-'/
-@enduml
-```
 
 ### Generate The Code
 Generate the code using `ss.cli` and open `index.html` in a web browser to interact with the state machine. You may need to refresh the page in your browser to see the changes.
@@ -311,19 +264,21 @@ A future section will cover how to use the current time to implement a timeout t
 
 The `index.html` JavaScript is already setup to dispatch the `DO` event to the state machine every 500ms. All we need to do is wait for 10 `DO` events to transition to the `OFF` state. Why 10? 5 seconds x 2 events/second.
 
-Add the following lines to the PlantUML file:
+Add the following behaviors to the `ON3` state:
 
-```plantuml
-ON3: enter / count = 5 * 2;
-ON3: 1. do / count--;
-ON3 --> OFF: [count <= 0]
-```
+- `enter / count = 5 * 2;`
+- `1. do / count--;`
+- Transition from `ON3` to `OFF` when `count <= 0`
+
+It should look something like this:
+
+![](docs/on3-to-off.png)
 
 We see that the transition from `ON3` to `OFF` is guarded by `[count <= 0]`, but there is no event explicitly associated with it like `DIM` or `INC`.
 
 For convenience, StateSmith will *implicitly* assume the `DO` event for any behavior/transition that does not have an explicit event associated with it.
 
-You can see this if you open the `LightSm.sim.html` file in your browser and look at the `ON3` state. You will see that the transition to `OFF` is guarded by `DO [count <= 0]`.
+You can see this if you open the `LightSm.sim.html` file in your browser and look at the `ON3` state (after you run code generation again). You will see that the transition to `OFF` is guarded by `DO [count <= 0]`.
 
 ### Polled State Machines
 In case the last section wasn't clear, polled state machines need the `DO` event to be dispatched to them periodically. This enables them to check guard conditions.
@@ -332,10 +287,6 @@ If, however, you want a behavior/transition to be checked for any event/trigger,
 
 
 ### Test It
-Your design should now look like this:
-
-![](./docs/transition-to-off.png)
-
 Generate the code using `ss.cli` and open `index.html` in a web browser to interact with the state machine. You may need to refresh the page in your browser to see the changes.
 
 
@@ -350,33 +301,45 @@ Instead of having each of the 3 `ON` states transition to `OFF`, we will create 
 ### Add The `ON_GROUP` State
 Add the `ON_GROUP` state and move the `ON1`, `ON2`, and `ON3` states into it.
 
-```plantuml
-state OFF
+> TIP: if you haven't already watched the short tip on [Non-related nodes overlap](https://github.com/StateSmith/StateSmith/wiki/Troubleshooting#non-related-nodes-overlap), you probably should.
 
-state ON_GROUP {
-    state ON1
-    state ON2
-    state ON3
-}
-```
+The [StateSmith draw.io plugin makes grouping](https://github.com/StateSmith/StateSmith-drawio-plugin/wiki/How-to-Use#group-states) states much faster, but we will do it manually here. We still don't have a great way of [installing](https://github.com/StateSmith/StateSmith/issues/368) the StateSmith plugin into draw.io.
+
+It's not hard to add a new state manually. It just takes a few more steps.
+1. off to the side, create a new state that will be the group.
+1. drag the states you want to group into the new state.
+1. move the group to where you want it.
+1. some edges might be "behind" the new group state, so you might need to move them to the front.
+
+<br>
+
+![group](https://github.com/user-attachments/assets/483e9473-fa85-4f58-9405-a6caa3186c3b)
+
+> Tip from above gif: you can reset the edge type to `Orthogonal` to have it auto route the edge if it needs adjusting.
+>
+> ![image](https://github.com/user-attachments/assets/0c44876f-9bb9-4bca-8710-afafe9714ddc)
+
 
 ### Add The Transition
 Add the transition from `ON_GROUP` to `OFF` when the `OFF` event is received.
 
-```plantuml
-ON_GROUP --> OFF: OFF
-```
+![add-off-transition](https://github.com/user-attachments/assets/628c19f8-d67a-4ee6-8b60-a8436379c63e)
+
+> Tip from above gif: sometimes the `Straight` edge type looks better.
+
 
 And that's it! Normally handwriting a hierarchical state machine is a lot more work. Easy for us.
 
 ### Test It
-Your design should now look like this:
-
-![](./docs/final.png)
-
 Generate the code using `ss.cli` and open `index.html` in a web browser to interact with the state machine. You may need to refresh the page in your browser to see the changes.
 
 <br>
+
+## Add Some Style
+If you want, you can add style to highlight specific states and transitions.
+
+![](docs/styled.png)
+
 <br>
 
 # Onwards! ⏭️

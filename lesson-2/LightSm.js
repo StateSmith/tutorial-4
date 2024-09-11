@@ -6,27 +6,37 @@ class LightSm
 {
     static EventId = 
     {
-        DIM : 0,
-        INC : 1,
+        DO : 0, // The `do` event is special. State event handlers do not consume this event (ancestors all get it too) unless a transition occurs.
+        DIM : 1,
+        INC : 2,
+        OFF : 3,
     }
     static { Object.freeze(this.EventId); }
     
-    static EventIdCount = 2;
+    static EventIdCount = 4;
     static { Object.freeze(this.EventIdCount); }
     
     static StateId = 
     {
         ROOT : 0,
         OFF : 1,
-        ON1 : 2,
+        ON_GROUP : 2,
+        ON1 : 3,
+        ON2 : 4,
+        ON3 : 5,
     }
     static { Object.freeze(this.StateId); }
     
-    static StateIdCount = 3;
+    static StateIdCount = 6;
     static { Object.freeze(this.StateIdCount); }
     
     // Used internally by state machine. Feel free to inspect, but don't modify.
     stateId;
+    
+    // Variables. Can be used for inputs, outputs, user variables...
+    vars = {
+        count: 0,
+    };
     
     // Starts the state machine. Must be called before dispatching events. Not thread safe.
     start()
@@ -77,11 +87,41 @@ class LightSm
                 }
                 break;
             
+            // STATE: ON_GROUP
+            case LightSm.StateId.ON_GROUP:
+                switch (eventId)
+                {
+                    case LightSm.EventId.OFF: this.#ON_GROUP_off(); break;
+                }
+                break;
+            
             // STATE: ON1
             case LightSm.StateId.ON1:
                 switch (eventId)
                 {
+                    case LightSm.EventId.INC: this.#ON1_inc(); break;
                     case LightSm.EventId.DIM: this.#ON1_dim(); break;
+                    case LightSm.EventId.OFF: this.#ON_GROUP_off(); break; // First ancestor handler for this event
+                }
+                break;
+            
+            // STATE: ON2
+            case LightSm.StateId.ON2:
+                switch (eventId)
+                {
+                    case LightSm.EventId.INC: this.#ON2_inc(); break;
+                    case LightSm.EventId.DIM: this.#ON2_dim(); break;
+                    case LightSm.EventId.OFF: this.#ON_GROUP_off(); break; // First ancestor handler for this event
+                }
+                break;
+            
+            // STATE: ON3
+            case LightSm.StateId.ON3:
+                switch (eventId)
+                {
+                    case LightSm.EventId.DO: this.#ON3_do(); break;
+                    case LightSm.EventId.DIM: this.#ON3_dim(); break;
+                    case LightSm.EventId.OFF: this.#ON_GROUP_off(); break; // First ancestor handler for this event
                 }
                 break;
         }
@@ -98,7 +138,13 @@ class LightSm
             {
                 case LightSm.StateId.OFF: this.#OFF_exit(); break;
                 
+                case LightSm.StateId.ON_GROUP: this.#ON_GROUP_exit(); break;
+                
                 case LightSm.StateId.ON1: this.#ON1_exit(); break;
+                
+                case LightSm.StateId.ON2: this.#ON2_exit(); break;
+                
+                case LightSm.StateId.ON3: this.#ON3_exit(); break;
                 
                 default: return;  // Just to be safe. Prevents infinite loop if state ID memory is somehow corrupted.
             }
@@ -148,11 +194,47 @@ class LightSm
             // Step 2: Transition action: ``.
             
             // Step 3: Enter/move towards transition target `ON1`.
+            this.#ON_GROUP_enter();
             this.#ON1_enter();
             
             // Step 4: complete transition. Ends event dispatch. No other behaviors are checked.
             return;
         } // end of behavior for OFF
+        
+        // No ancestor handles this event.
+    }
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////
+    // event handlers for state ON_GROUP
+    ////////////////////////////////////////////////////////////////////////////////
+    
+    #ON_GROUP_enter()
+    {
+        this.stateId = LightSm.StateId.ON_GROUP;
+    }
+    
+    #ON_GROUP_exit()
+    {
+        this.stateId = LightSm.StateId.ROOT;
+    }
+    
+    #ON_GROUP_off()
+    {
+        // ON_GROUP behavior
+        // uml: OFF TransitionTo(OFF)
+        {
+            // Step 1: Exit states until we reach `ROOT` state (Least Common Ancestor for transition).
+            this.#exitUpToStateHandler(LightSm.StateId.ROOT);
+            
+            // Step 2: Transition action: ``.
+            
+            // Step 3: Enter/move towards transition target `OFF`.
+            this.#OFF_enter();
+            
+            // Step 4: complete transition. Ends event dispatch. No other behaviors are checked.
+            return;
+        } // end of behavior for ON_GROUP
         
         // No ancestor handles this event.
     }
@@ -176,7 +258,7 @@ class LightSm
     
     #ON1_exit()
     {
-        this.stateId = LightSm.StateId.ROOT;
+        this.stateId = LightSm.StateId.ON_GROUP;
     }
     
     #ON1_dim()
@@ -185,7 +267,7 @@ class LightSm
         // uml: DIM TransitionTo(OFF)
         {
             // Step 1: Exit states until we reach `ROOT` state (Least Common Ancestor for transition).
-            this.#ON1_exit();
+            this.#exitUpToStateHandler(LightSm.StateId.ROOT);
             
             // Step 2: Transition action: ``.
             
@@ -199,6 +281,180 @@ class LightSm
         // No ancestor handles this event.
     }
     
+    #ON1_inc()
+    {
+        // ON1 behavior
+        // uml: INC TransitionTo(ON2)
+        {
+            // Step 1: Exit states until we reach `ON_GROUP` state (Least Common Ancestor for transition).
+            this.#ON1_exit();
+            
+            // Step 2: Transition action: ``.
+            
+            // Step 3: Enter/move towards transition target `ON2`.
+            this.#ON2_enter();
+            
+            // Step 4: complete transition. Ends event dispatch. No other behaviors are checked.
+            return;
+        } // end of behavior for ON1
+        
+        // No ancestor handles this event.
+    }
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////
+    // event handlers for state ON2
+    ////////////////////////////////////////////////////////////////////////////////
+    
+    #ON2_enter()
+    {
+        this.stateId = LightSm.StateId.ON2;
+        
+        // ON2 behavior
+        // uml: enter / { yellowLaser(); }
+        {
+            // Step 1: execute action `yellowLaser();`
+            yellowLaser();
+        } // end of behavior for ON2
+        
+        // ON2 behavior
+        // uml: enter / { count = 0; }
+        {
+            // Step 1: execute action `count = 0;`
+            this.vars.count = 0;
+        } // end of behavior for ON2
+    }
+    
+    #ON2_exit()
+    {
+        this.stateId = LightSm.StateId.ON_GROUP;
+    }
+    
+    #ON2_dim()
+    {
+        // ON2 behavior
+        // uml: DIM TransitionTo(ON1)
+        {
+            // Step 1: Exit states until we reach `ON_GROUP` state (Least Common Ancestor for transition).
+            this.#ON2_exit();
+            
+            // Step 2: Transition action: ``.
+            
+            // Step 3: Enter/move towards transition target `ON1`.
+            this.#ON1_enter();
+            
+            // Step 4: complete transition. Ends event dispatch. No other behaviors are checked.
+            return;
+        } // end of behavior for ON2
+        
+        // No ancestor handles this event.
+    }
+    
+    #ON2_inc()
+    {
+        // ON2 behavior
+        // uml: 1. INC / { count++; }
+        {
+            // Step 1: execute action `count++;`
+            this.vars.count++;
+        } // end of behavior for ON2
+        
+        // ON2 behavior
+        // uml: INC [count >= 3] TransitionTo(ON3)
+        if (this.vars.count >= 3)
+        {
+            // Step 1: Exit states until we reach `ON_GROUP` state (Least Common Ancestor for transition).
+            this.#ON2_exit();
+            
+            // Step 2: Transition action: ``.
+            
+            // Step 3: Enter/move towards transition target `ON3`.
+            this.#ON3_enter();
+            
+            // Step 4: complete transition. Ends event dispatch. No other behaviors are checked.
+            return;
+        } // end of behavior for ON2
+        
+        // No ancestor handles this event.
+    }
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////
+    // event handlers for state ON3
+    ////////////////////////////////////////////////////////////////////////////////
+    
+    #ON3_enter()
+    {
+        this.stateId = LightSm.StateId.ON3;
+        
+        // ON3 behavior
+        // uml: enter / { redLaser(); }
+        {
+            // Step 1: execute action `redLaser();`
+            redLaser();
+        } // end of behavior for ON3
+        
+        // ON3 behavior
+        // uml: enter / { count = 5 * 2; }
+        {
+            // Step 1: execute action `count = 5 * 2;`
+            this.vars.count = 5 * 2;
+        } // end of behavior for ON3
+    }
+    
+    #ON3_exit()
+    {
+        this.stateId = LightSm.StateId.ON_GROUP;
+    }
+    
+    #ON3_dim()
+    {
+        // ON3 behavior
+        // uml: DIM TransitionTo(ON2)
+        {
+            // Step 1: Exit states until we reach `ON_GROUP` state (Least Common Ancestor for transition).
+            this.#ON3_exit();
+            
+            // Step 2: Transition action: ``.
+            
+            // Step 3: Enter/move towards transition target `ON2`.
+            this.#ON2_enter();
+            
+            // Step 4: complete transition. Ends event dispatch. No other behaviors are checked.
+            return;
+        } // end of behavior for ON3
+        
+        // No ancestor handles this event.
+    }
+    
+    #ON3_do()
+    {
+        // ON3 behavior
+        // uml: 1. do / { count--; }
+        {
+            // Step 1: execute action `count--;`
+            this.vars.count--;
+        } // end of behavior for ON3
+        
+        // ON3 behavior
+        // uml: do [count <= 0] TransitionTo(OFF)
+        if (this.vars.count <= 0)
+        {
+            // Step 1: Exit states until we reach `ROOT` state (Least Common Ancestor for transition).
+            this.#exitUpToStateHandler(LightSm.StateId.ROOT);
+            
+            // Step 2: Transition action: ``.
+            
+            // Step 3: Enter/move towards transition target `OFF`.
+            this.#OFF_enter();
+            
+            // Step 4: complete transition. Ends event dispatch. No other behaviors are checked.
+            return;
+        } // end of behavior for ON3
+        
+        // No ancestor handles this event.
+    }
+    
     // Thread safe.
     static stateIdToString(id)
     {
@@ -206,7 +462,10 @@ class LightSm
         {
             case LightSm.StateId.ROOT: return "ROOT";
             case LightSm.StateId.OFF: return "OFF";
+            case LightSm.StateId.ON_GROUP: return "ON_GROUP";
             case LightSm.StateId.ON1: return "ON1";
+            case LightSm.StateId.ON2: return "ON2";
+            case LightSm.StateId.ON3: return "ON3";
             default: return "?";
         }
     }
@@ -217,7 +476,9 @@ class LightSm
         switch (id)
         {
             case LightSm.EventId.DIM: return "DIM";
+            case LightSm.EventId.DO: return "DO";
             case LightSm.EventId.INC: return "INC";
+            case LightSm.EventId.OFF: return "OFF";
             default: return "?";
         }
     }
