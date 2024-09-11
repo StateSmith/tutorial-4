@@ -1,5 +1,5 @@
 # Make Mario Dance!
-In this lesson, we are going to run the StateSmith CLI to generate a state machine from a PlantUML diagram. We will then interact with the state machine using a simple html/javascript page.
+In this lesson, we are going to run the StateSmith CLI to generate a state machine from a draw.io diagram. We will then interact with the state machine using a simple html/javascript page.
 
 Prerequisites: be able to run `ss.cli` as explained in the main [../README.md](../README.md) file.
 
