@@ -72,7 +72,7 @@ Open `MarioSm.drawio` in draw.io to see the state machine diagram.
 
 At the bottom of the diagram, you will see multiple pages.
 
-When ss.cli generates you a new draw.io file, it creates 3 pages for you:
+When `ss.cli` generates you a new draw.io file, it creates 3 pages for you:
 
 1. `design` - the state machine diagram
 1. `config` - where you can specify StateSmith settings
@@ -87,29 +87,22 @@ The config page in the `MarioSm.drawio` file contains a special [TOML](https://t
 
 <br>
 
-The format uses [TOML](https://toml.io/en/) syntax.
+You will often see TOML settings written like this:
 
 ```TOML
 [SmRunnerSettings]
 transpilerId = "JavaScript"
 ```
 
-Settings are documented here: https://github.com/StateSmith/StateSmith/blob/main/docs/settings.md
+or like this:
 
-<br>
-
-## Edit The Diagram
-Try modifying the diagram by changing some of the transitions.
-
-For example, make Mario start as Super Mario (instead of small) when he is revived with a mushroom.
-
-After you've made your changes, run the `ss.cli` command again to see the changes in the generated code.
-
-```
-ss.cli run --here
+```TOML
+SmRunnerSettings.transpilerId = "JavaScript"
 ```
 
-Then refresh the `index.html` page in your browser to see the changes in action.
+Both are equivalent.
+
+StateSmith [Settings are documented here](https://github.com/StateSmith/StateSmith/blob/main/docs/settings.md).
 
 
 <br>
