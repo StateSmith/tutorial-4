@@ -15,7 +15,7 @@ As you complete the lessons in this tutorial, you'll be able to interact with th
 # Download This Tutorial
 You should download the full contents of this tutorial to your computer so that you can follow along with the examples and complete the exercises.
 
-[CLick here](https://github.com/StateSmith/tutorial-4/archive/refs/heads/main.zip), or click the green "Code" button at the top of the Github page and select "Download ZIP".
+[Click here](https://github.com/StateSmith/tutorial-4/archive/refs/heads/main.zip), or click the green "Code" button at the top of the Github page and select "Download ZIP".
 
 Then unzip the contents to a location on your computer where you can easily access them.
 
