@@ -48,21 +48,7 @@ Open `index.html` in your web browser and press buttons to send events to the st
 
 ![](../docs/interact.gif)
 
-<br>
 
-# StateSmith Runs Your Exact Code
-By default, StateSmith outputs the **exact same action code** you put in your diagram. In this case, it is calling global functions (written by the user), but we'll also cover other ways for your state machine to interact with the outside world.
-
-
-![](docs/fire-global-function.png)
-
-
-```javascript
-// global user written function called by the state machine
-function fireMario() {
-    marioImg.src = "img/fire-mario-dance.gif"
-}
-```
 
 <br>
 
@@ -103,6 +89,24 @@ SmRunnerSettings.transpilerId = "JavaScript"
 Both are equivalent.
 
 StateSmith [Settings are documented here](https://github.com/StateSmith/StateSmith/blob/main/docs/settings.md).
+
+
+<br>
+
+# StateSmith Runs Your Exact Code
+By default, StateSmith outputs the **exact same action code** you put in your diagram. In this case, it is calling global functions (written by the user), but we'll also cover other ways for your state machine to interact with the outside world.
+
+
+![](docs/fire-global-function.png)
+
+
+```javascript
+// global user written function called by the state machine
+function fireMario() {
+    marioImg.src = "img/fire-mario-dance.gif"
+}
+```
+
 
 
 <br>
