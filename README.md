@@ -1,6 +1,6 @@
-This tutorial (`tutorial-4`) is specific to draw.io.
+This tutorial (`tutorial-4`) is specific to draw.io. If you prefer PlantUML, check out [tutorial-3](https://github.com/StateSmith/tutorial-3).
 
-If you prefer PlantUML, check out [tutorial-3](https://github.com/StateSmith/tutorial-3).
+<br>
 
 # Let's try it quick!
 The first design we will look at is a small Hierarchical State Machine (HSM) that represents the state of Mario in a game.
