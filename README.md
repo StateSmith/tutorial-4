@@ -1,4 +1,7 @@
-This tutorial (`tutorial-4`) is specific to draw.io. If you prefer PlantUML, check out [tutorial-3](https://github.com/StateSmith/tutorial-3).
+> This tutorial (`tutorial-4`) is specific to draw.io. If you prefer PlantUML, check out [tutorial-3](https://github.com/StateSmith/tutorial-3).
+
+> [🎥 A video series for this tutorial is available](https://www.youtube.com/playlist?list=PLC7mUEDZkCILp_Xvi6wjHv2EqMn_MbEXl).
+
 
 <br>
 

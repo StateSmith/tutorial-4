@@ -1,3 +1,6 @@
+> [🎥 A video for this lesson is available](https://www.youtube.com/watch?v=sgDdOjf8gcU&list=PLC7mUEDZkCILp_Xvi6wjHv2EqMn_MbEXl&index=2).
+
+
 # Make Mario Dance!
 In this lesson, we are going to run the StateSmith CLI to generate a state machine from a draw.io diagram. We will then interact with the state machine using a simple html/javascript page.
 

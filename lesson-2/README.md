@@ -1,3 +1,6 @@
+> [🎥 A video for this lesson is available](https://www.youtube.com/watch?v=lkPiK_bhBH4&list=PLC7mUEDZkCILp_Xvi6wjHv2EqMn_MbEXl&index=3).
+
+
 # Let's Create A Brand New State Machine
 In this lesson, we will create a new state machine from scratch that controls a laser flashlight.
 
