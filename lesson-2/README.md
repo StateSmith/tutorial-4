@@ -319,9 +319,7 @@ Add the `ON_GROUP` state and move the `ON1`, `ON2`, and `ON3` states into it.
 
 > TIP: if you haven't already watched the short tip on [Non-related nodes overlap](https://github.com/StateSmith/StateSmith/wiki/Troubleshooting#non-related-nodes-overlap), you probably should.
 
-The [StateSmith draw.io plugin makes grouping](https://github.com/StateSmith/StateSmith-drawio-plugin/wiki/How-to-Use#group-states) states much faster, but we will do it manually here. We still don't have a great way of [installing](https://github.com/StateSmith/StateSmith/issues/368) the StateSmith plugin into draw.io.
-
-It's not hard to add a new state manually. It just takes a few more steps.
+It's not hard to add a new group state manually. It just takes a few more steps.
 1. off to the side, create a new state that will be the group.
 1. drag the states you want to group into the new state.
 1. move the group to where you want it.
